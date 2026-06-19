@@ -184,7 +184,7 @@ const DashboardCollectionDetail = () => {
       setCollection(updated);
     } catch (err) {
       console.error(err);
-      setUploadError('Failed to upload photos. Ensure they are images under 25MB.');
+      setUploadError('Failed to upload photos. Ensure they are valid image formats and the gallery size remains under 3 GB.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -420,7 +420,7 @@ const DashboardCollectionDetail = () => {
                 <span className="dropzone-text-highlight">Click to select files</span> or drag and drop photos
               </p>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '-6px' }}>
-                JPEG, PNG or WEBP up to 25MB. Uploading into set: <strong style={{ color: 'var(--text-primary)' }}>{activeSetFilter === 'All' ? 'Highlights' : activeSetFilter}</strong>
+                JPEG, PNG or WEBP. Upload up to 3 GB total size for this gallery. Uploading into set: <strong style={{ color: 'var(--text-primary)' }}>{activeSetFilter === 'All' ? 'Highlights' : activeSetFilter}</strong>
               </p>
               <input 
                 type="file" 

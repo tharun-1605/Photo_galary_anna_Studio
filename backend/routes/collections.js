@@ -50,7 +50,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 25 * 1024 * 1024 } // 25MB max size
+  limits: { fileSize: 3 * 1024 * 1024 * 1024 } // 3GB max size
 });
 
 // @desc    Get all collections
@@ -235,6 +235,22 @@ router.post('/:id/photos', protect, upload.array('photos', 50), async (req, res)
 
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No photos uploaded' });
+    }
+
+    // Calculate total size of existing photos plus new files
+    const totalExistingSize = collection.photos.reduce((sum, p) => sum + (p.size || 0), 0);
+    const incomingSize = req.files.reduce((sum, f) => sum + f.size, 0);
+    const maxGallerySize = 3 * 1024 * 1024 * 1024; // 3 GB in bytes
+
+    if (totalExistingSize + incomingSize > maxGallerySize) {
+      // Delete the newly uploaded files to prevent disk space leaks
+      req.files.forEach(file => {
+        const filePath = path.join(__dirname, '../uploads', file.filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+      return res.status(400).json({ message: 'Upload limit exceeded. Total storage size for one gallery collection cannot exceed 3 GB.' });
     }
 
     const newPhotos = req.files.map(file => ({

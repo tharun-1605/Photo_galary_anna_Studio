@@ -877,10 +877,21 @@ h1, h2, h3, h4, h5, h6 {
 /* Public Masonry Layout */
 .public-gallery-grid {
   padding: var(--grid-padding);
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--grid-gap);
+  column-count: 3;
+  column-gap: var(--grid-gap);
   background-color: var(--bg-primary);
+}
+
+@media (max-width: 1024px) {
+  .public-gallery-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .public-gallery-grid {
+    column-count: 1;
+  }
 }
 
 .public-photo-item {
@@ -889,12 +900,15 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: inline-block;
+  width: 100%;
+  margin-bottom: var(--grid-gap);
+  break-inside: avoid;
 }
 
 .public-photo-item img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -1373,7 +1387,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .public-gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    column-count: 1;
   }
   
   .content-body {
