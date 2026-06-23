@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { History, Eye, Download, Star, ExternalLink, RefreshCw } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
-import { api } from '../api';
+import { api, IMAGE_BASE_URL } from '../api';
 
 const DashboardActivity = () => {
   const [logs, setLogs] = useState([]);
@@ -140,13 +140,13 @@ const DashboardActivity = () => {
                           {fav.photoUrls.map((url, idx) => (
                             <a 
                               key={idx}
-                              href={`http://localhost:5000${url}`}
+                              href={`${IMAGE_BASE_URL}${url}`}
                               target="_blank"
                               rel="noreferrer"
                               style={{ flexShrink: 0, width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--border-color)' }}
                             >
                               <img 
-                                src={`http://localhost:5000${url}`} 
+                                src={`${IMAGE_BASE_URL}${url}`} 
                                 alt="favorite" 
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                               />

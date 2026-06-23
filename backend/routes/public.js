@@ -7,6 +7,19 @@ const Collection = require('../models/Collection');
 const Favorite = require('../models/Favorite');
 const Activity = require('../models/Activity');
 
+// Helper to generate a slug
+const slugify = (text) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+};
+
 // @desc    Get all public collections
 // @route   GET /api/public/collections
 // @access  Public
@@ -36,7 +49,7 @@ router.get('/collections/:slug', async (req, res) => {
     }
 
     // Check if collection is hidden/draft
-    if (collection.settings.status !== 'Published') {
+    if (collection.settings.status !== 'Published' && collection.settings.status !== 'Hidden') {
       return res.status(403).json({ message: 'This collection is not public' });
     }
 

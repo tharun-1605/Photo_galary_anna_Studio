@@ -13,7 +13,7 @@ import {
   X
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
-import { api } from '../api';
+import { api, IMAGE_BASE_URL } from '../api';
 
 const DashboardCollections = () => {
   const navigate = useNavigate();
@@ -183,7 +183,7 @@ const DashboardCollections = () => {
             >
               {col.coverPhoto ? (
                 <img 
-                  src={`http://localhost:5000${col.coverPhoto}`} 
+                  src={`${IMAGE_BASE_URL}${col.coverPhoto}`} 
                   alt={col.name} 
                   className="collection-cover-img" 
                 />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Camera, Calendar, ArrowRight, Lock } from 'lucide-react';
-import { api } from '../api';
+import { api, IMAGE_BASE_URL } from '../api';
 
 const Home = () => {
   const [collections, setCollections] = useState([]);
@@ -82,7 +82,7 @@ const Home = () => {
                 <div style={{ width: '100%', aspectRatio: '16/10', overflow: 'hidden', borderRadius: '4px', backgroundColor: '#eae0d3', position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                   {col.coverPhoto ? (
                     <img 
-                      src={`http://localhost:5000${col.coverPhoto}`} 
+                      src={`${IMAGE_BASE_URL}${col.coverPhoto}`} 
                       alt={col.name} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
                       onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}

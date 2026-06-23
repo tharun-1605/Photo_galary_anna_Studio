@@ -19,7 +19,7 @@ import {
   Check,
   Eye
 } from 'lucide-react';
-import { api } from '../api';
+import { api, IMAGE_BASE_URL } from '../api';
 
 const ClientGallery = () => {
   const { slug } = useParams();
@@ -48,6 +48,7 @@ const ClientGallery = () => {
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinError, setPinError] = useState('');
   const [isZipping, setIsZipping] = useState(false);
+  const [pendingDownloadPhotoUrl, setPendingDownloadPhotoUrl] = useState('');
   
   // Client Favorites
   const [favoritesList, setFavoritesList] = useState([]);
@@ -150,6 +151,13 @@ const ClientGallery = () => {
         // Handled in trigger
       } else if (emailModalPurpose === 'download-zip') {
         triggerZipDownload(email);
+      } else if (emailModalPurpose === 'download-single') {
+        if (gallery.settings?.downloads?.pin) {
+          setShowPinModal(true);
+        } else {
+          triggerSingleDownload(pendingDownloadPhotoUrl);
+          setPendingDownloadPhotoUrl('');
+        }
       }
     }
   };
@@ -178,13 +186,14 @@ const ClientGallery = () => {
 
     if (!clientEmail) {
       setEmailModalPurpose('download-single');
+      setPendingDownloadPhotoUrl(photoUrl);
       setShowEmailModal(true);
       return;
     }
 
     // Check if gallery has PIN requirement
     if (gallery.settings?.downloads?.pin) {
-      // Prompt for pin
+      setPendingDownloadPhotoUrl(photoUrl);
       setShowPinModal(true);
       return;
     }
@@ -195,7 +204,7 @@ const ClientGallery = () => {
 
   const triggerSingleDownload = (photoUrl) => {
     const url = api.public.getDownloadPhotoUrl(gallery.slug, clientEmail, photoUrl, downloadPin);
-    window.open(url, '_blank');
+    window.location.href = url;
   };
 
   const handleDownloadFullGallery = () => {
@@ -206,6 +215,7 @@ const ClientGallery = () => {
     }
 
     if (gallery.settings?.downloads?.pin && !downloadPin) {
+      setPendingDownloadPhotoUrl(''); // Ensure full gallery zip is downloaded
       setShowPinModal(true);
       return;
     }
@@ -229,8 +239,12 @@ const ClientGallery = () => {
 
     if (downloadPin === gallery.settings.downloads.pin) {
       setShowPinModal(false);
-      // Determine what to download: if we clicked zip download
-      triggerZipDownload(clientEmail);
+      if (pendingDownloadPhotoUrl) {
+        triggerSingleDownload(pendingDownloadPhotoUrl);
+        setPendingDownloadPhotoUrl('');
+      } else {
+        triggerZipDownload(clientEmail);
+      }
     } else {
       setPinError('Invalid Download PIN. Check with your photographer.');
     }
@@ -370,7 +384,7 @@ const ClientGallery = () => {
         <div className={`cover-wrapper ${coverStyleClass}`}>
           {gallery.coverPhoto && coverStyleClass !== 'cover-minimalist' && (
             <img 
-              src={`http://localhost:5000${gallery.coverPhoto}`} 
+              src={`${IMAGE_BASE_URL}${gallery.coverPhoto}`} 
               alt={gallery.name} 
               className="cover-bg"
             />
@@ -410,7 +424,7 @@ const ClientGallery = () => {
           {coverStyleClass === 'cover-splitscreen' && (
             <div className="cover-splitscreen">
               {gallery.coverPhoto ? (
-                <img src={`http://localhost:5000${gallery.coverPhoto}`} alt={gallery.name} className="cover-split-image" />
+                <img src={`${IMAGE_BASE_URL}${gallery.coverPhoto}`} alt={gallery.name} className="cover-split-image" />
               ) : (
                 <div style={{ backgroundColor: 'var(--bg-tertiary)' }} />
               )}
@@ -440,7 +454,7 @@ const ClientGallery = () => {
                 <h1 style={{ fontSize: '40px', margin: '8px 0' }}>{gallery.name}</h1>
               </div>
               {gallery.coverPhoto && (
-                <img src={`http://localhost:5000${gallery.coverPhoto}`} alt={gallery.name} className="cover-centered-img" />
+                <img src={`${IMAGE_BASE_URL}${gallery.coverPhoto}`} alt={gallery.name} className="cover-centered-img" />
               )}
               <button 
                 className="btn btn-primary" 
@@ -572,7 +586,7 @@ const ClientGallery = () => {
                     onClick={() => setLightboxIndex(index)}
                   >
                     <img 
-                      src={`http://localhost:5000${photo.url}`} 
+                      src={`${IMAGE_BASE_URL}${photo.url}`} 
                       alt={photo.filename} 
                     />
                     
@@ -668,7 +682,7 @@ const ClientGallery = () => {
 
           <div className="lightbox-container">
             <img 
-              src={`http://localhost:5000${activePhotos[lightboxIndex].url}`} 
+              src={`${IMAGE_BASE_URL}${activePhotos[lightboxIndex].url}`} 
               alt={activePhotos[lightboxIndex].filename} 
               className="lightbox-img"
             />

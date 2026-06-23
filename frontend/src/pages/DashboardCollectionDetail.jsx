@@ -19,7 +19,7 @@ import {
   Maximize2
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
-import { api } from '../api';
+import { api, IMAGE_BASE_URL } from '../api';
 
 const DashboardCollectionDetail = () => {
   const { id } = useParams();
@@ -454,7 +454,7 @@ const DashboardCollectionDetail = () => {
                 {getFilteredPhotos().map((photo) => (
                   <div key={photo._id} className="uploaded-photo-card">
                     <img 
-                      src={`http://localhost:5000${photo.url}`} 
+                      src={`${IMAGE_BASE_URL}${photo.url}`} 
                       alt={photo.filename} 
                     />
                     

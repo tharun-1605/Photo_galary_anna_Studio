@@ -1,4 +1,15 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const getApiBaseUrl = () => {
+  const { protocol, hostname } = window.location;
+  return `${protocol}//${hostname}:5000/api`;
+};
+
+const getFileBaseUrl = () => {
+  const { protocol, hostname } = window.location;
+  return `${protocol}//${hostname}:5000`;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
+export const IMAGE_BASE_URL = getFileBaseUrl();
 
 // Helper to get auth header
 const getAuthHeader = () => {
